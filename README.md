@@ -11,7 +11,9 @@ Publish GitHub repository releases as Sparkle compatible appcast.xml
 ### 2) Enter the requested values
 
 - `GITHUB_API_LOGIN`: your GitHub login (username)
-- `GITHUB_API_TOKEN`: a generated GitHub [personal access tokens](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) with the public_repo scope
+- `GITHUB_API_TOKEN`: a generated GitHub [personal access tokens](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) with the `public_repo` scope
+
+**WARNING:** Please understand the implications of issuing a GitHub personal access token. Ensure that the token you use is only used for this tool, and that you allow only the `public_repo` scope, or else, your private repositories releases may leak to the public!
 
 ### 3) Hit the `Deploy for Free` button
 
@@ -24,3 +26,7 @@ The `appcast.xml` for one of your project hosted on GitHub at `your_username/you
 https:// **generated-name-123456**.herokuapp.com/**your_project**/appcast.xml
 
 Where `generated-name-123456` is the name of your newly deployed app, and `your_project` is the name of any repository that belongs to the user identified earlier into the `GITHUB_API_LOGIN` variable.
+
+### 5) Now point your `SUFeedURL` to the above URL
+
+And enjoy automatic updates linked to your repository releases!
