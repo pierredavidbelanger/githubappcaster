@@ -1,0 +1,1 @@
+web: java -cp "target/lib/*:target/*" ca.pjer.githubappcaster.App

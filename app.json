@@ -1,0 +1,23 @@
+{
+  "name": "GitHub App Caster",
+  "description": "Publish GitHub repository releases as Sparkle compatible appcast.xml",
+  "repository": "https://github.com/pierredavidbelanger/githubappcaster",
+  "keywords": [
+    "GitHub",
+    "Releases",
+    "Sparkle",
+    "appcast.xml"
+  ],
+  "env": {
+    "GITHUB_API_LOGIN": {
+      "description": "Your GitHub login."
+    },
+    "GITHUB_API_TOKEN": {
+      "description": "A GitHub personal access token (with at least the public_repo scope)."
+    },
+    "CACHE_SPEC": {
+      "description": "The cache configuration spec (see: http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/cache/CacheBuilderSpec.html).",
+      "value": "maximumSize=10,expireAfterWrite=5m"
+    }
+  }
+}
