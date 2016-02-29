@@ -4,6 +4,7 @@ import com.github.rjeschke.txtmark.Processor;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.kohsuke.github.GHAsset;
@@ -26,13 +27,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.*;
 
 @Path("/")
-@Produces(MediaType.APPLICATION_XML)
 public class App {
 
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
@@ -90,8 +87,6 @@ public class App {
 
     private class RssCacheLoader extends CacheLoader<String, Rss> {
 
-        private final Logger logger = Logger.getLogger(getClass().getName());
-
         private final GitHub gitHub;
 
         public RssCacheLoader(GitHub gitHub) {
@@ -103,7 +98,8 @@ public class App {
 
             GHRepository repository = gitHub.getRepository(System.getenv("GITHUB_API_LOGIN") + "/" + repo);
 
-            DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+            DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             Rss rss = new Rss();
             rss.version = "2.0";
@@ -111,7 +107,7 @@ public class App {
 
             Channel channel = new Channel();
             channel.title = repository.getName() + " - changelog";
-            channel.link = uriInfo.getRequestUri().toString();
+            channel.link = new URI(uriInfo.getRequestUri().getScheme(), uriInfo.getRequestUri().getHost(), uriInfo.getRequestUri().getPath(), null).toString();
             channel.description = "Most recent changes with links to updates.";
             channel.language = "en";
             channel.creator = "githubappcaster";
@@ -159,6 +155,7 @@ public class App {
 
     @GET
     @Path("/{repo}/appcast.xml")
+    @Produces(MediaType.APPLICATION_XML)
     public Rss appcast(@PathParam("repo") String repo) throws Exception {
         return cache.get(repo);
     }
@@ -166,6 +163,11 @@ public class App {
     public static void main(String[] args) {
         URI uri = UriBuilder.fromUri("http://0.0.0.0/").port(Integer.parseInt(System.getenv("PORT"))).build();
         ResourceConfig resourceConfig = new ResourceConfig().register(new App());
-        GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig);
+        final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                server.shutdown();
+            }
+        }));
     }
 }
