@@ -164,7 +164,7 @@ public class App {
     }
 
     public static void main(String[] args) {
-        URI uri = UriBuilder.fromUri("http://localhost/").port(Integer.parseInt(System.getenv("PORT"))).build();
+        URI uri = UriBuilder.fromUri("http://0.0.0.0/").port(Integer.parseInt(System.getenv("PORT"))).build();
         ResourceConfig resourceConfig = new ResourceConfig().register(new App());
         GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig);
     }
