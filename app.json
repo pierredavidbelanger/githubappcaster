@@ -15,6 +15,10 @@
     "GITHUB_API_TOKEN": {
       "description": "A GitHub personal access token (with at least the public_repo scope)."
     },
+    "GITHUB_REPO_PREFIX": {
+      "description": "A GitHub repository prefix (personal user name or organisation name).",
+      "required": false
+    },
     "CACHE_SPEC": {
       "description": "The cache configuration spec (see: http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/cache/CacheBuilderSpec.html).",
       "value": "maximumSize=10,expireAfterWrite=5m"

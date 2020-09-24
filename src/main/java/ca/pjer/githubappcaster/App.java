@@ -1,6 +1,7 @@
 package ca.pjer.githubappcaster;
 
 import com.github.rjeschke.txtmark.Processor;
+import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -96,7 +97,12 @@ public class App {
         @Override
         public Rss load(String repo) throws Exception {
 
-            GHRepository repository = gitHub.getRepository(System.getenv("GITHUB_API_LOGIN") + "/" + repo);
+            String prefix = System.getenv("GITHUB_REPO_PREFIX");
+            if (Strings.isNullOrEmpty(prefix)) {
+                prefix = System.getenv("GITHUB_API_LOGIN");
+            }
+
+            GHRepository repository = gitHub.getRepository(prefix + "/" + repo);
 
             DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
